@@ -1,0 +1,18 @@
+{
+  "name": "Avart",
+  "displayName": "Avart",
+  "description": "The easy way to move",
+  "expo": {
+    "name": "Avart",
+    "slug": "expo-template-bare",
+    "privacy": "unlisted",
+    "sdkVersion": "35.0.0",
+    "version": "1.0.0",
+    "entryPoint": "node_modules/expo/AppEntry.js",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ]
+  }
+}
