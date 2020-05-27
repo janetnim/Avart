@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Button, Text, ActivityIndicator } from 'react-native';
+import { View, Button, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import Input from './Input';
 import firebase from 'firebase';
 import { AuthSession } from 'expo';
@@ -15,23 +15,18 @@ export default class LoginForm extends Component {
     };
   }
 
+  static navigationOptions = {
+    drawerLabel: () => null
+  }
+
   handleButtonPress() {
     this.setState({error: '', loading: true})
     const { email, password } = this.state;
     firebase.auth().signInWithEmailAndPassword(email, password).
     then(this.onLoginSuccess.bind(this)).
-    catch(() => {
-      firebase.auth().createUserWithEmailAndPassword(email, password).
-      then(this.onLoginSuccess.bind(this)).
-      catch((error) => {
-        let errorCode = error.code;
-        let errorMessage = error.message;
-        if(errorCode == 'auth/weak-password') {
-          this.onLoginFailure.bind(this)('Weak password!')
-        } else {
-          this.onLoginFailure.bind(this)(errorMessage)
-        }
-      });
+    catch((error) => {
+      let errorMessage = error.message;
+      this.onLoginFailure.bind(this)(errorMessage)
     });
   }
 
@@ -71,11 +66,12 @@ export default class LoginForm extends Component {
   }
 
   onLoginSuccess() {
-    this.setState({email: '', password: '', error: '', loading: false})
+    this.setState({email: '', password: '', error: '', loading: false});
+    this.props.navigation.navigate('Home');
   }
 
   onLoginFailure(errorMessage) {
-    this.setState({error: errorMessage, loading: false})
+    this.setState({error: errorMessage, loading: false});
   }
 
   renderLogInButton() {
@@ -87,7 +83,7 @@ export default class LoginForm extends Component {
       );
     }
     return (
-      <Button title="Sign In" onPress={this.handleButtonPress.bind(this)} style={{paddingTop: 10}} />
+      <Button title="Sign In" onPress={this.handleButtonPress.bind(this)} color="#48929B" style={{paddingTop: 10}} />
     )
   }
 
@@ -97,20 +93,52 @@ export default class LoginForm extends Component {
         <Button
           title="Sign in with Google"
           onPress={this.handleGoogleLogin}
+          color="#48929B"
         />
       </View>
     )
   }
 
+  renderSignInButton() {
+    return (
+      <View style={styles.signUp}>
+        <Text>Create a new account?</Text>
+        <Text style={styles.signUpLink} onPress={() => {this.props.navigation.navigate('SignUpForm')}}> Sign up</Text>
+      </View>
+    );
+  }
+
   render() {
     return (
-      <View style={{'top': '15%', 'margin': '10%'}} className="login">
+      <View style={styles.main} className="login">
         <Text style={{'color': 'red'}}>{this.state.error}</Text>
         <Input label="Email" placeholder="Enter email..." value={this.state.email} secureTextEntry={false} onChangeText={(email) => this.setState({email})} />
         <Input label="Password" placeholder="Enter password..." value={this.state.password} secureTextEntry={false} onChangeText={(password) => this.setState({password})} />
         {this.renderLogInButton()}
         {this.renderGoogleSigninButton()}
+        {this.renderSignInButton()}
       </View>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  main: {
+    flex: 1,
+    padding: 30,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    top: '15%',
+    margin: '10%'
+  },
+  signUp: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 10
+  },
+  signUpLink: {
+    color: '#069',
+    textDecorationLine: "underline"
+  }
+})

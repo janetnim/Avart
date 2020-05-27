@@ -1,9 +1,10 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Text, ImageBackground } from 'react-native';
 
-const Header = (props) => {
+const Header = () => {
   return (
-    <Text style={styles.header}>{props.title}</Text>
+    <ImageBackground style={styles.header} source= {require('./assets/brand_logo.png')} >
+    </ImageBackground>
   )
 };
 
@@ -11,17 +12,16 @@ const styles = {
   header : {
     margin: 9,
     padding: 9,
-    fontSize: 32,
     shadowColor: '#ddd',
     backgroundColor: '#f8f8f8',
-    height: 60,
-    paddingTop: 14,
+    height: 100,
+    paddingTop: 18,
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center',
     borderColor: '#fff',
     borderBottomWidth: 4,
-  }
+  },
 }
 
 export default Header;

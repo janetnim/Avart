@@ -1,91 +1,50 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
-import Header from './src/components/Header';
+import Home from './src/components/Home';
+import SignOut from './src/components/SignOut';
+import Payments from './src/components/Payments';
+import History from './src/components/History';
+import Authentication from './src/components/Authentication';
+import UpdateProfile from './src/components/Profile';
 import LoginForm from './src/components/LoginForm';
-import firebase from 'firebase';
-import { createStackNavigator } from 'react-navigation-stack';
+import SignUpForm from './src/components/SignUpForm';
+import CustomDrawerNavigation from './src/components/Drawer';
 import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
+import { createDrawerNavigator } from 'react-navigation-drawer';
 
-class AuthenticationScreen extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      loggedIn: false
-    };
-  }
-  componentDidMount() {
-    let config = {
-      apiKey: "AIzaSyA1nF_Bbfm3zy91F5k2beeZ5L1At-Mux2E",
-      authDomain: "avart-app.firebaseapp.com",
-      databaseURL: "https://avart-app.firebaseio.com",
-      projectId: "avart-app",
-      storageBucket: "avart-app.appspot.com",
-      messagingSenderId: "127805856366",
-      appId: "1:127805856366:web:0b0caca4fd97e98c9f647f"
-    };
-
-    firebase.initializeApp(config);
-
-    firebase.auth().onAuthStateChanged((user) => {
-      if(user) {
-        this.setState({loggedIn: true})
-      } else {
-        this.setState({loggedIn: false})
-      }
-    })
-  }
-
-  renderDetailsPage = () => {
-    if (this.state.loggedIn) {
-      return (
-        <View>
-          <HomeScreen />
-          <Button title='Sign Out' onPress={() => firebase.auth().signOut()} />
-        </View>
-      )
-    } else {
-      return <LoginForm />;
-    }
-  }
-
-  // <Button title='Sign Out' onPress={() => firebase.auth().signOut()} />
-  // firebase log out code
-
-  render() {
-    return (
-      <View>
-        <Header title='Avart' />
-        {this.renderDetailsPage()}
-      </View>
-    )
-  }
-}
-
-//testing more than one route
-class HomeScreen extends Component {
-  render() {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Home Screen</Text>
-      </View>
-    );
-  }
-}
-
-const AppNavigator = createStackNavigator(
-  {
-    Auth: AuthenticationScreen,
-    Home: HomeScreen,
+const Drawer = createDrawerNavigator({
+  Authentication: {
+    screen: Authentication,
   },
-  {
-    inititalRouteName: 'Home',
+  SignUpForm: {
+    screen: SignUpForm,
+  },
+  LoginForm: {
+    screen: LoginForm,
+  },
+  Home: {
+    screen: Home,
+  },
+  Profile: {
+    screen: UpdateProfile,
+  },
+  History: {
+    screen: History,
+  },
+  Payments: {
+    screen: Payments,
+  },
+  SignOut: {
+    screen: SignOut,
   }
-);
-
-const AppContainer = createAppContainer(AppNavigator);
-
-export default class App extends Component {
-  render() {
-    return < AppContainer/>;
+},{
+  initialRouteName: 'Authentication',
+  contentComponent: CustomDrawerNavigation,
+  contentOptions: {
+    activeTintColor: '#000000',
+    activeBackgroundColor: '#e6e6e6',
   }
-}
+});
+
+const App = createAppContainer(Drawer);
+export default App;
